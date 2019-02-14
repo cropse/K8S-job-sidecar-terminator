@@ -1,0 +1,32 @@
+
+apiVersion: batch/v1
+kind: Job
+metadata:
+  name: django-migrate-job
+  labels:
+    app.kubernetes.io/name: django-template-job-migrate
+spec:
+  template:
+    metadata:
+      name: django-migrate-job
+    spec:
+      restartPolicy: Never
+      containers:
+      - name: migrate-job
+        image: django:latest
+        imagePullPolicy: Always
+        command: ["/bin/bash", "-c"]
+        args: ["python manage.py migrate && curl 127.0.0.1:8080/kill"]
+      - name: cloudsql-proxy
+        image: cropse/gce-proxy-suicider
+        command: ["/cloud_sql_proxy",
+                  "-instances={}",
+                  "-credential_file={}"]
+        volumeMounts:
+        - name: cloudsql-instance-credentials
+          mountPath: /secrets/cloudsql
+          readOnly: true
+      volumes:
+      - name: cloudsql-instance-credentials
+        secret:
+          secretName: db-credentials

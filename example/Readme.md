@@ -1,0 +1,1 @@
+Just simple K8s Job example for django migration, It can't run unless parameter is filled.
