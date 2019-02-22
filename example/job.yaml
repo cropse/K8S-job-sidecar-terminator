@@ -17,6 +17,8 @@ spec:
         imagePullPolicy: Always
         command: ["/bin/bash", "-c"]
         args: ["python manage.py migrate && curl 127.0.0.1:8080/kill"]
+        # or you need more stable way to make sure complete
+        # args: ["until [ `python manage.py migrate` ] ; do sleep 1; done && curl 127.0.0.1:8080/kill"]
       - name: cloudsql-proxy
         image: cropse/gce-proxy-suicider
         command: ["/cloud_sql_proxy",
