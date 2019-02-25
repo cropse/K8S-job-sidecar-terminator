@@ -85,7 +85,10 @@ func Receiver(cmd *exec.Cmd) {
 			time.Sleep(3 * time.Second)
 			os.Exit(0)
 		}()
-
+	})
+	// health check
+	http.HandleFunc("/ping", func(w http.ResponseWriter, r *http.Request) {
+		fmt.Fprintf(w, "pong")
 	})
 	// running simple http server
 	go func() {
